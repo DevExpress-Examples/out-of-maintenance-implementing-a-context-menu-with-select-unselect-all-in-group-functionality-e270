@@ -1,64 +1,38 @@
-﻿<%-- BeginRegion Page setup --%>
-<%@ Page Language="C#" AutoEventWireup="true"  CodeFile="Default.aspx.cs" Inherits="_Default" %>
-<%@ Register Assembly="DevExpress.Web.v13.1" Namespace="DevExpress.Web.ASPxEditors" TagPrefix="dxe" %>
-<%@ Register Assembly="DevExpress.Web.v13.1" Namespace="DevExpress.Web.ASPxGridView" TagPrefix="dxwgv" %>
-<%@ Register Assembly="DevExpress.Web.v13.1" Namespace="DevExpress.Web.ASPxMenu" TagPrefix="dxm" %>
-<%-- EndRegion --%>	
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+
+<%@ Register Assembly="DevExpress.Web.v16.1, Version=16.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Namespace="DevExpress.Web" TagPrefix="dx" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-<title>Untitled Page</title>
-<script type="text/javascript">
-var __dxSampleVisibleIndex = -1;
-function grid_ContextMenu(s, e) {	
-	if(e.objectType == "grouprow") {	
-		__dxSampleVisibleIndex = e.index;
-		menu.ShowAtPos(ASPxClientUtils.GetEventX(e.htmlEvent), ASPxClientUtils.GetEventY(e.htmlEvent));
-	}
-}
-function menu_ItemClick(s, e) {
-	grid.PerformCallback(e.item.name + "|" + __dxSampleVisibleIndex);
-}
-</script>
+    <title>Implementing a context menu with "Select / Unselect All In Group" functionality</title>
+    <script>
+        function onContextMenuItemClick(s, e) {
+            if (e.item.name === "SelectAll" || e.item.name === "UnselectAll")
+                grid.PerformCallback(e.item.name + "|" + e.elementIndex);
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
-		<dxwgv:ASPxGridView runat="server" ID="grid" ClientInstanceName="grid"
-			AutoGenerateColumns="False" DataSourceID="AccessDataSource1" KeyFieldName="OrderID" OnCustomCallback="grid_CustomCallback">			
-			<Styles>
-				<GroupRow BackColor="#FFFF80"></GroupRow>
-				<SelectedRow BackColor="Lime"></SelectedRow>
-			</Styles>
-			<SettingsBehavior AutoExpandAllGroups="True" />
-			<Settings ShowGroupPanel="True" />
-			<ClientSideEvents ContextMenu="grid_ContextMenu" />
-			<%-- BeginRegion Columns --%>
-			<Columns>
-				<dxwgv:GridViewDataTextColumn FieldName="OrderID" ReadOnly="True" VisibleIndex="0" GroupIndex="0" SortIndex="0" SortOrder="Ascending">
-				</dxwgv:GridViewDataTextColumn>
-				<dxwgv:GridViewDataTextColumn FieldName="ProductID" ReadOnly="True" VisibleIndex="1">
-				</dxwgv:GridViewDataTextColumn>
-				<dxwgv:GridViewDataTextColumn FieldName="UnitPrice" VisibleIndex="2">
-				</dxwgv:GridViewDataTextColumn>
-				<dxwgv:GridViewDataTextColumn FieldName="Quantity" VisibleIndex="3">
-				</dxwgv:GridViewDataTextColumn>
-				<dxwgv:GridViewDataTextColumn FieldName="Discount" VisibleIndex="4">
-				</dxwgv:GridViewDataTextColumn>
-			</Columns>
-			<%-- EndRegion --%>
-		</dxwgv:ASPxGridView>
-		<asp:AccessDataSource ID="AccessDataSource1" runat="server" DataFile="~/App_Data/nwind.mdb"
-			SelectCommand="SELECT * FROM [Order Details]">
-		</asp:AccessDataSource>
-		<%-- BeginRegion Menu --%>
-		<dxm:ASPxPopupMenu runat="server" ID="menu" ClientInstanceName="menu">
-			<Items>
-				<dxm:MenuItem Text="Select all in group" Name="sel"></dxm:MenuItem>
-				<dxm:MenuItem Text="Unselect all in group" Name="unsel"></dxm:MenuItem>
-			</Items>
-			<ClientSideEvents ItemClick="menu_ItemClick" />
-		</dxm:ASPxPopupMenu>
-		<%-- EndRegion --%>	
+        <dx:ASPxGridView runat="server" ID="grid" ClientInstanceName="grid" OnFillContextMenuItems="grid_FillContextMenuItems" OnContextMenuItemVisibility="grid_ContextMenuItemVisibility"
+            AutoGenerateColumns="False" DataSourceID="AccessDataSource1" KeyFieldName="OrderID;ProductID" OnCustomCallback="grid_CustomCallback">
+            <SettingsContextMenu Enabled="true" EnableRowMenu="True" />
+            <ClientSideEvents ContextMenuItemClick="onContextMenuItemClick" />
+            <Styles>
+                <GroupRow BackColor="LightBlue" Font-Bold="true" />
+                <SelectedRow BackColor="LightCyan" />
+            </Styles>
+            <SettingsBehavior AutoExpandAllGroups="True" />
+            <Columns>
+                <dx:GridViewDataTextColumn FieldName="OrderID" GroupIndex="0" />
+                <dx:GridViewDataTextColumn FieldName="ProductID" />
+                <dx:GridViewDataTextColumn FieldName="UnitPrice" />
+                <dx:GridViewDataTextColumn FieldName="Quantity" />
+                <dx:GridViewDataTextColumn FieldName="Discount" />
+            </Columns>
+        </dx:ASPxGridView>
+        <asp:AccessDataSource ID="AccessDataSource1" runat="server" DataFile="~/App_Data/nwind.mdb" SelectCommand="SELECT * FROM [Order Details]" />
     </form>
 </body>
 </html>
