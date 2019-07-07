@@ -3,8 +3,8 @@
 Partial Public Class _Default
 	Inherits System.Web.UI.Page
 
-	Protected Sub grid_CustomCallback(ByVal sender As Object, ByVal e As ASPxGridViewCustomCallbackEventArgs)
-		Dim data() As String = e.Parameters.Split("|"c)
+Protected Sub grid_CustomCallback(ByVal sender As Object, ByVal e As DevExpress.Web.ASPxGridViewCustomCallbackEventArgs)
+		Dim data As String() = e.Parameters.Split("|"c)
 		If data.Length = 2 Then
 			SetSelectionCore(Integer.Parse(data(1)), data(0) = "SelectAll")
 		End If
